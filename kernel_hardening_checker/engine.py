@@ -99,9 +99,16 @@ class OptCheck:
             print(f'| {colorize_result(self.result)}', end='')
 
     def json_dump(self, with_results):
-        dump = [self.name, self.type, self.expected, self.decision, self.reason]
+        dump = {
+            "name": self.name,
+            "type": self.type,
+            "expected": self.expected,
+            "decision": self.decision,
+            "reason": self.reason,
+        }
         if with_results:
-            dump.append(self.result)
+            dump["result"] = self.result
+            dump["success"] = self.result.startswith("OK")
         return dump
 
 
@@ -199,7 +206,8 @@ class ComplexOptCheck:
     def json_dump(self, with_results):
         dump = self.opts[0].json_dump(False)
         if with_results:
-            dump.append(self.result)
+            dump["result"] = self.result
+            dump["success"] = self.result.startswith("OK")
         return dump
 
 
