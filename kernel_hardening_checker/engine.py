@@ -15,13 +15,20 @@ GREEN_COLOR = '\x1b[32m'
 RED_COLOR = '\x1b[31m'
 COLOR_END = '\x1b[0m'
 
+def formalize_result(input_text):
+    if input_text.startswith('OK'):
+        return True
+    else:    
+        assert(input_text.startswith('FAIL:')), f'unexpected result "{input_text}"'
+        return False
+
+
 def colorize_result(input_text):
     if input_text is None:
         return input_text
-    if input_text.startswith('OK'):
+    if formalize_result(input_text):
         color = GREEN_COLOR
     else:
-        assert(input_text.startswith('FAIL:')), f'unexpected result "{input_text}"'
         color = RED_COLOR
     return f'{color}{input_text}{COLOR_END}'
 
@@ -108,7 +115,7 @@ class OptCheck:
         }
         if with_results:
             dump["result"] = self.result
-            dump["success"] = self.result.startswith("OK")
+            dump["success"] = formalize_result(self.result)
         return dump
 
 
@@ -207,7 +214,7 @@ class ComplexOptCheck:
         dump = self.opts[0].json_dump(False)
         if with_results:
             dump["result"] = self.result
-            dump["success"] = self.result.startswith("OK")
+            dump["success"] = formalize_result(self.result)
         return dump
 
 
